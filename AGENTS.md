@@ -1,3 +1,11 @@
+## Tech stack
+
+- Astro 7
+- TypeScript 6 (strict, via `astro/tsconfigs/strict`); `@astrojs/check` does not support TypeScript 7 yet
+- Tailwind CSS 4 via `@tailwindcss/vite`, no `tailwind.config.js` — customize the theme with `@theme` in `src/styles/global.css`
+
+Run `npm run check` to type-check `.astro` and `.ts` files.
+
 ## Development
 
 When starting the dev server, use background mode:

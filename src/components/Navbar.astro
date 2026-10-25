@@ -1,0 +1,334 @@
+---
+import { Image } from 'astro:assets';
+import { siFacebook, siInstagram, siLine } from 'simple-icons';
+import logo from '../assets/logo/SUNSUN_PRINT.png';
+import { facebook, instagram, lineId } from '../data/contact';
+import { pageLinks, productCategories, productsIndexLink } from '../data/navigation';
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isCurrentSection(href: string) {
+	return href === '/' ? currentPath === '/' : currentPath === href || currentPath.startsWith(`${href}/`);
+}
+
+const trailingLinks = [pageLinks.gallery, pageLinks.howToOrder, pageLinks.contact];
+
+const desktopLinkClass =
+	'relative flex h-full items-center text-[15px] transition hover:text-white after:absolute after:inset-x-0 after:bottom-0 after:h-[3px] after:scale-x-0 after:bg-brand after:transition-transform hover:after:scale-x-100 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white';
+const activeDesktopLinkClass = 'text-white after:scale-x-100';
+const inactiveDesktopLinkClass = 'text-white/75';
+
+const mobileRowClass =
+	'flex items-center justify-between border-b border-white/10 py-4 text-base font-bold aria-[current=page]:text-brand';
+---
+
+<!-- The negative top offset lets the utility bar scroll away while the main bar stays pinned -->
+<header data-site-header class="group/header sticky top-0 z-50 text-white lg:-top-9">
+	<div class="hidden h-9 bg-brand lg:block">
+		<div class="mx-auto flex h-full max-w-360 items-center justify-between px-12 text-xs">
+			<p class="text-white/85">งานพิมพ์ที่ดี เริ่มจากการออกแบบที่ดี</p>
+			<ul class="flex h-full items-center divide-x divide-white/25">
+				<li class="px-4">
+					<a href={pageLinks.line.href} class="flex items-center gap-2 transition hover:text-white/75">
+						<svg viewBox="0 0 24 24" class="size-3.5 fill-current" aria-hidden="true">
+							<path d={siLine.path}></path>
+						</svg>
+						LINE: {lineId}
+					</a>
+				</li>
+				<li class="flex items-center gap-4 pl-4">
+					<a href={facebook.url} aria-label="Facebook" class="transition hover:text-white/75">
+						<svg viewBox="0 0 24 24" class="size-3.5 fill-current" aria-hidden="true">
+							<path d={siFacebook.path}></path>
+						</svg>
+					</a>
+					<a href={instagram.url} aria-label="Instagram" class="transition hover:text-white/75">
+						<svg viewBox="0 0 24 24" class="size-3.5 fill-current" aria-hidden="true">
+							<path d={siInstagram.path}></path>
+						</svg>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="border-b border-white/10 bg-ink">
+		<nav
+			class="mx-auto flex h-16 max-w-360 items-center gap-4 px-5 sm:px-8 lg:grid lg:h-20 lg:grid-cols-[1fr_auto_1fr] lg:px-12"
+			aria-label="เมนูหลัก"
+		>
+			<a href={pageLinks.home.href} class="shrink-0 justify-self-start focus-visible:outline-2 focus-visible:outline-white">
+				<Image
+					src={logo}
+					alt="SUNSUN PRINT หน้าแรก"
+					width={72}
+					densities={[1, 2]}
+					loading="eager"
+					class="-my-2 w-14 lg:w-18"
+				/>
+			</a>
+
+			<ul class="hidden h-full items-stretch gap-8 lg:flex xl:gap-11">
+				<li>
+					<a
+						href={pageLinks.home.href}
+						aria-current={isCurrentSection(pageLinks.home.href) ? 'page' : undefined}
+						class:list={[
+							desktopLinkClass,
+							isCurrentSection(pageLinks.home.href) ? activeDesktopLinkClass : inactiveDesktopLinkClass,
+						]}
+					>
+						{pageLinks.home.label}
+					</a>
+				</li>
+
+				<li data-dropdown class="group/dropdown relative">
+					<button
+						type="button"
+						data-dropdown-toggle
+						aria-expanded="false"
+						aria-controls="products-menu"
+						class:list={[
+							desktopLinkClass,
+							'gap-1.5',
+							isCurrentSection(productsIndexLink.href) ? activeDesktopLinkClass : inactiveDesktopLinkClass,
+						]}
+					>
+						สินค้า
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2.5"
+							stroke-linecap="square"
+							class="size-3 transition group-hover/dropdown:rotate-180 group-data-open/dropdown:rotate-180"
+							aria-hidden="true"
+						>
+							<path d="m6 9 6 6 6-6"></path>
+						</svg>
+					</button>
+
+					<div
+						id="products-menu"
+						class="invisible absolute top-full left-1/2 w-88 -translate-x-1/2 opacity-0 transition group-focus-within/dropdown:visible group-focus-within/dropdown:opacity-100 group-hover/dropdown:visible group-hover/dropdown:opacity-100 group-data-open/dropdown:visible group-data-open/dropdown:opacity-100"
+					>
+						<ul class="divide-y divide-white/8 border border-t-2 border-white/10 border-t-brand bg-ink shadow-2xl shadow-black/60">
+							{
+								productCategories.map((category) => (
+									<li>
+										<a
+											href={category.href}
+											aria-current={isCurrentSection(category.href) ? 'page' : undefined}
+											class="group/item block px-5 py-3.5 transition hover:bg-white/4 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
+										>
+											<span class="block text-sm font-bold transition group-hover/item:text-brand group-aria-[current=page]/item:text-brand">
+												{category.label}
+											</span>
+											<span class="mt-0.5 block text-xs text-white/55">{category.description}</span>
+										</a>
+									</li>
+								))
+							}
+							<li>
+								<a
+									href={productsIndexLink.href}
+									class="flex items-center justify-between bg-white/3 px-5 py-3.5 text-sm font-bold transition hover:bg-white/6 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
+								>
+									{productsIndexLink.label}
+									<span class="text-brand" aria-hidden="true">→</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</li>
+
+				{
+					trailingLinks.map((link) => (
+						<li>
+							<a
+								href={link.href}
+								aria-current={isCurrentSection(link.href) ? 'page' : undefined}
+								class:list={[
+									desktopLinkClass,
+									isCurrentSection(link.href) ? activeDesktopLinkClass : inactiveDesktopLinkClass,
+								]}
+							>
+								{link.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+
+			<div class="ml-auto flex items-center gap-1 lg:ml-0 lg:justify-self-end">
+				<a
+					href={pageLinks.order.href}
+					aria-current={isCurrentSection(pageLinks.order.href) ? 'page' : undefined}
+					class="flex h-10 items-center gap-2.5 rounded-sm bg-brand px-4 text-sm font-bold transition hover:bg-brand-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:h-12 lg:px-7"
+				>
+					{pageLinks.order.label}
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2.5"
+						stroke-linecap="square"
+						class="hidden size-4 lg:block"
+						aria-hidden="true"
+					>
+						<path d="M5 12h14M13 6l6 6-6 6"></path>
+					</svg>
+				</a>
+				<button
+					type="button"
+					data-menu-toggle
+					aria-expanded="false"
+					aria-controls="mobile-menu"
+					aria-label="เปิดเมนู"
+					class="-mr-2 grid size-11 place-items-center transition hover:text-white/70 focus-visible:outline-2 focus-visible:outline-white lg:hidden"
+				>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="square"
+						class="size-6 group-data-menu-open/header:hidden"
+						aria-hidden="true"
+					>
+						<path d="M4 7h16M4 12h16M4 17h16"></path>
+					</svg>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="square"
+						class="hidden size-6 group-data-menu-open/header:block"
+						aria-hidden="true"
+					>
+						<path d="M6 6l12 12M18 6 6 18"></path>
+					</svg>
+				</button>
+			</div>
+		</nav>
+	</div>
+
+	<div
+		id="mobile-menu"
+		class="fixed inset-x-0 top-16 bottom-0 hidden overflow-y-auto bg-ink px-5 pb-8 group-data-menu-open/header:block lg:hidden"
+	>
+		<ul>
+			<li>
+				<a
+					href={pageLinks.home.href}
+					aria-current={isCurrentSection(pageLinks.home.href) ? 'page' : undefined}
+					class={mobileRowClass}
+				>
+					{pageLinks.home.label}
+				</a>
+			</li>
+			<li class="border-b border-white/10 py-4">
+				<a
+					href={productsIndexLink.href}
+					aria-current={currentPath === productsIndexLink.href ? 'page' : undefined}
+					class="text-base font-bold aria-[current=page]:text-brand"
+				>
+					สินค้า
+				</a>
+				<ul class="mt-2 border-l-2 border-brand pl-4">
+					{
+						productCategories.map((category) => (
+							<li>
+								<a
+									href={category.href}
+									aria-current={isCurrentSection(category.href) ? 'page' : undefined}
+									class="block py-2 text-sm text-white/75 transition hover:text-white aria-[current=page]:text-white"
+								>
+									{category.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</li>
+			{
+				trailingLinks.map((link) => (
+					<li>
+						<a
+							href={link.href}
+							aria-current={isCurrentSection(link.href) ? 'page' : undefined}
+							class={mobileRowClass}
+						>
+							{link.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<a
+			href={pageLinks.order.href}
+			class="mt-6 flex h-13 items-center justify-center rounded-sm bg-brand font-bold transition hover:bg-brand-deep"
+		>
+			{pageLinks.order.label}
+		</a>
+
+		<div class="mt-6 flex items-center justify-between text-sm text-white/70">
+			<a href={pageLinks.line.href} class="flex items-center gap-2 transition hover:text-white">
+				<svg viewBox="0 0 24 24" class="size-4 fill-current" aria-hidden="true">
+					<path d={siLine.path}></path>
+				</svg>
+				LINE: {lineId}
+			</a>
+			<div class="flex items-center gap-5">
+				<a href={facebook.url} aria-label="Facebook" class="transition hover:text-white">
+					<svg viewBox="0 0 24 24" class="size-4 fill-current" aria-hidden="true">
+						<path d={siFacebook.path}></path>
+					</svg>
+				</a>
+				<a href={instagram.url} aria-label="Instagram" class="transition hover:text-white">
+					<svg viewBox="0 0 24 24" class="size-4 fill-current" aria-hidden="true">
+						<path d={siInstagram.path}></path>
+					</svg>
+				</a>
+			</div>
+		</div>
+	</div>
+</header>
+
+<script>
+	const header = document.querySelector<HTMLElement>('[data-site-header]');
+	const menuToggle = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+	const dropdown = header?.querySelector<HTMLElement>('[data-dropdown]');
+	const dropdownToggle = dropdown?.querySelector<HTMLButtonElement>('[data-dropdown-toggle]');
+
+	function setMenuOpen(isOpen: boolean) {
+		header?.toggleAttribute('data-menu-open', isOpen);
+		menuToggle?.setAttribute('aria-expanded', String(isOpen));
+		menuToggle?.setAttribute('aria-label', isOpen ? 'ปิดเมนู' : 'เปิดเมนู');
+		document.documentElement.classList.toggle('overflow-hidden', isOpen);
+	}
+
+	function setDropdownOpen(isOpen: boolean) {
+		dropdown?.toggleAttribute('data-open', isOpen);
+		dropdownToggle?.setAttribute('aria-expanded', String(isOpen));
+	}
+
+	menuToggle?.addEventListener('click', () => setMenuOpen(!header?.hasAttribute('data-menu-open')));
+	dropdownToggle?.addEventListener('click', () => setDropdownOpen(!dropdown?.hasAttribute('data-open')));
+
+	document.addEventListener('click', (event) => {
+		if (dropdown && !dropdown.contains(event.target as Node)) setDropdownOpen(false);
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key !== 'Escape') return;
+		setMenuOpen(false);
+		setDropdownOpen(false);
+	});
+
+	matchMedia('(min-width: 64rem)').addEventListener('change', (event) => {
+		if (event.matches) setMenuOpen(false);
+	});
+</script>

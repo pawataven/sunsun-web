@@ -1,11 +1,127 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { Image } from 'astro:assets';
+import { siFacebook, siInstagram, siLine } from 'simple-icons';
+import Navbar from '../components/Navbar.astro';
+import SocialTile from '../components/SocialTile.astro';
+import Toast from '../components/Toast.astro';
 import Layout from '../layouts/Layout.astro';
+import logo from '../assets/logo/SUNSUN_PRINT.png';
+import { facebook, instagram } from '../data/contact';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const socialLinks = [
+	{
+		href: facebook.url,
+		label: 'Facebook',
+		handle: facebook.handle,
+		iconPath: siFacebook.path,
+		iconBackgroundClass: 'bg-[#0866ff]',
+	},
+	{
+		href: instagram.url,
+		label: 'Instagram',
+		handle: instagram.handle,
+		iconPath: siInstagram.path,
+		iconBackgroundClass: 'bg-linear-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5]',
+	},
+];
+
+const currentYear = new Date().getFullYear();
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+	title="SUNSUN PRINT | ช่องทางติดต่อ"
+	description="SUNSUN PRINT — Modern Print Studio งานพิมพ์ที่ดี เริ่มจากการออกแบบที่ดี ติดต่อเราได้ทาง LINE, Facebook และ Instagram"
+>
+	<Navbar />
+	<div class="min-h-dvh">
+		<main class="relative mx-auto max-w-md px-5 pt-12 pb-12">
+			<button
+				type="button"
+				id="share-button"
+				class="absolute top-5 right-5 grid size-10 place-items-center rounded-full border border-white/15 bg-white/5 backdrop-blur-sm transition hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+				aria-label="แชร์หน้านี้"
+			>
+				<svg
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					class="size-4"
+					aria-hidden="true"
+				>
+					<path d="M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"></path>
+				</svg>
+			</button>
+
+			<h1 class="motion-safe:animate-rise">
+				<Image
+					src={logo}
+					alt="SUNSUN PRINT"
+					width={208}
+					densities={[1, 2]}
+					loading="eager"
+					class="mx-auto -my-5 w-52"
+				/>
+			</h1>
+			<p class="mt-3 text-center text-sm text-white/75 motion-safe:animate-rise" style="animation-delay: 80ms">
+				งานพิมพ์ที่ดี เริ่มจากการออกแบบที่ดี
+			</p>
+
+			<ul class="mt-10 grid grid-cols-2 gap-3">
+				{
+					socialLinks.map((link, index) => (
+						<li>
+							<SocialTile {...link} animationDelayMs={160 + index * 60} />
+						</li>
+					))
+				}
+			</ul>
+
+			<div class="mt-10 flex items-center gap-4 text-[11px] tracking-[0.3em] text-white/45">
+				<span class="h-px flex-1 bg-white/12"></span>
+				GET IN TOUCH
+				<span class="h-px flex-1 bg-white/12"></span>
+			</div>
+
+			<div class="mt-6 motion-safe:animate-rise" style="animation-delay: 360ms">
+				<a
+					href="/line"
+					class="relative flex h-14 items-center justify-center rounded-full bg-brand px-14 text-sm font-bold transition hover:bg-brand-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+				>
+					<svg viewBox="0 0 24 24" class="absolute left-5 size-5 fill-current" aria-hidden="true">
+						<path d={siLine.path}></path>
+					</svg>
+					สอบถามทาง LINE OFFICIAL
+				</a>
+			</div>
+		</main>
+
+		<footer class="relative pb-10 text-center tracking-[0.15em]">
+			<span class="mx-auto mb-5 block h-0.5 w-10 bg-brand"></span>
+			<p class="text-[11px] text-white/50">© {currentYear} SUNSUN PRINT. All rights reserved</p>
+			<p class="mt-1.5 text-[11px] text-white/50">MODERN PRINT STUDIO</p>
+			<p class="mt-5 text-[10px] text-white/35">Designed & Developed by SOFT Z DIGITAL</p>
+		</footer>
+	</div>
+
+	<Toast />
 </Layout>
+
+<script>
+	import { copyToClipboard } from '../scripts/toast';
+
+	document.querySelector('#share-button')?.addEventListener('click', async () => {
+		const shareData = { title: document.title, url: location.href };
+		if (navigator.share) {
+			try {
+				await navigator.share(shareData);
+			} catch {
+				// User dismissed the share sheet
+			}
+			return;
+		}
+		copyToClipboard(location.href, 'คัดลอกลิงก์แล้ว');
+	});
+</script>
